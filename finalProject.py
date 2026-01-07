@@ -37,12 +37,35 @@
             # The raster data is in millimeters, but user inputs and the displayed information are converted to inches
 #The MLB Stadiums Shapefile is from ESRI ArcGIS Hub and is accurate as of the 2025 MLB season
 
-import arcpy, os, sys
+import os, sys
+try:
+    import arcpy
+
+except ImportError:
+    raise ImportError(
+        "ArcPy is required to run this script. "
+        "An ArcGIS Pro licensed environment is required."
+    )
 
 #Set up relative paths/directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(script_dir, "originalData")
 created_data_dir = os.path.join(script_dir,"createdData")
+
+required_paths = [
+    data_dir,
+    os.path.join(data_dir, "tl_2023_us_csa.shp"),
+    os.path.join(data_dir, "usa_csa_pop.csv"),
+    os.path.join(data_dir, "Major_League_Baseball_Stadiums.shp")
+]
+
+for path in required_paths:
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"Required data not found: {path}\n"
+            "See README.md for required data structure."
+        )
+    
 
 # If run without command-line arguments, prompt user for input instead
 if len(sys.argv) != 6:
